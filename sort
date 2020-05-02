@@ -1,0 +1,68 @@
+
+  #include<string.h>
+  #include<iostream>
+
+  void CountingSort(int array[], int nLength_, int nMaxNumber_)
+  {
+      // 参数检测
+      if (nullptr == array || nLength_ <= 1 || nMaxNumber_ <= 0)
+          return;
+  
+      // 统计元素的个数
+      int* ArrayCount = new int[nMaxNumber_ + 1]{0};
+      for (int i = 0; i < nLength_; ++i)
+      {
+          ++ArrayCount[array[i]];
+      }   
+  
+      // 计算待排序数组中小于等于第i个元素的个数. 
+      for (int i = 1; i < nMaxNumber_ + 1; ++i)
+      {   
+          ArrayCount[i] += ArrayCount[i-1];
+      }
+  
+      // 排序的数组放到输出数组中
+      int* ArrayResult = new int[nLength_];
+      for (int i = nLength_ - 1; i >=0; --i)
+      { 
+          int _nIndex = ArrayCount[array[i]] - 1; 
+          // 元素array[i]在输出数组中的下标
+          ArrayResult[_nIndex] = array[i];
+          --ArrayCount[array[i]];
+      }       
+  
+      // 交换数据并释放内存空间
+      memcpy(array, ArrayResult, sizeof(int) * nLength_);
+      delete [] ArrayCount;
+      ArrayCount = nullptr;
+      delete [] ArrayResult;
+      ArrayResult = nullptr;
+  }
+  
+  // 测试代码
+  static void PrintArray(int array[], int nLength_);
+  int main(int argc, char* argv[])
+  {
+      int test[10] = {12, 12, 4, 0, 8, 5, 2, 3, 9, 8};
+      std::cout << "排序前：" << std::endl;
+      PrintArray(test, 10);
+      CountingSort(test, 10, 12);
+      std::cout << "排序后：" << std::endl;
+      PrintArray(test, 10);
+  
+      return 0;
+  }
+  
+  // 打印
+  static void PrintArray(int array[], int nLength_)
+  {
+      if (nullptr == array || nLength_ <= 0)
+          return;
+  
+      for (int i = 0; i < nLength_; ++i)
+      {
+          std::cout << array[i] << " ";
+      }
+  
+      std::cout << std::endl;
+  }
